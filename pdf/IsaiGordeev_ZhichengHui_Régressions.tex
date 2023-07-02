@@ -1,0 +1,500 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[french]{babel}
+\usepackage{url,csquotes}
+\usepackage[hidelinks,hyperfootnotes=false]{hyperref}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage[margin=2cm]{geometry}
+\usepackage{tcolorbox, longtable}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{titlesec}
+%\usepackage{times}
+
+\begin{document}
+	\begin{center}
+		\textbf{Isai Gordeev et Zhicheng Hui}\\
+		Régressions, MAP361\\
+		École Polytechnique\\
+
+	\end{center}
+	
+\subsection*{T1}
+
+On dispose le modèle linéare
+$$ y_i = \beta_0 + \beta_1x_i+\varepsilon_i $$
+
+Comme $\varepsilon_i$ est une variable aléatoire gaussienne centrée de variance $\sigma^2 > 0$, on l'exprime avec la variable $y_i$ et la variable fixe $x_i$
+
+$$ \varepsilon_i = y_i - \left(\beta_0 + \beta_1x_i\right) \sim \mathcal{N}(0, \sigma^2)$$
+
+D'où
+
+$$ \frac{\varepsilon_i}{\sigma} = \frac{y_i - \left(\beta_0 + \beta_1x_i\right)}{\sigma} \sim \mathcal{N}(0, 1)$$
+
+$(\epsilon_i)_{i \ge 1}$ étant indépendentes, $(\frac{\epsilon_i}{\sigma})_{i \ge 1}$ l'est aussi, donc on a
+
+$$ \frac{\varepsilon}{\sigma} = \frac{y - X\beta}{\sigma} \sim \mathcal{N}(\pmb{0}, \pmb{I})$$
+
+On obtient ainsi la loi de $y$
+
+$$ y \sim \mathcal{N}(X\beta, \sigma^2\pmb{I}) $$
+
+Finalement
+
+$$ p(y) = (2\pi\sigma^2)^{-n/2}\displaystyle\exp\left(-\frac{||y - X\beta||^2}{2\sigma^2}\right)$$
+
+\subsection*{T2}
+
+
+L'estimateur du maximum de vraisemblance
+
+$$ \hat\beta \in \arg \min_{\beta\in\mathbb{R}^2}||y - X\beta||^2 $$
+
+Vérifions d'abord que la fonction $\beta \rightarrow ||y - X\beta||^2$ soit convexe et différentiable sur $\mathbb{R}^2$:
+
+Soit $\beta_1, \beta_2 \in \mathbb{R}^2$, soit $t \in [0, 1]$, alors on a selon l'inégalité triangulaire
+
+$$||y - X(t\beta_1 + (1-t)\beta_2)||^2 \le (|t| \cdot ||y - X\beta_1|| + |1-t| \cdot ||y - X\beta_2||)^2 \le t^2||y - X\beta_1||^2 + (1-t)^2||y - X\beta_2||^2$$
+
+Or, on a $t^2 \le t$ et $(1-t)^2 \le 1-t$ pour tout $t \in [0, 1]$
+
+$$||y - X(t\beta_1 + (1-t)\beta_2)||^2 \le (|t| \cdot ||y - X\beta_1|| + |1-t| \cdot ||y - X\beta_2||)^2 \le t||y - X\beta_1||^2 + (1-t)||y - X\beta_2||^2$$
+
+Donc cette fonction est convexe.
+
+Puis, on calcule
+
+$$\frac{\partial ||y - X\beta||^2}{\partial \beta_1} = -X 
+\begin{pmatrix}
+	1 \\
+	0
+\end{pmatrix}
+\left(y - X\beta\right)^{\text T} - 
+\begin{pmatrix}
+	0 & 1
+\end{pmatrix}
+X^{\text T}(y - X\beta)$$
+
+$$\frac{\partial ||y - X\beta||^2}{\partial \beta_2} = -X 
+\begin{pmatrix}
+	0 \\
+	1
+\end{pmatrix}
+\left(y - X\beta\right)^{\text T} - 
+\begin{pmatrix}
+	1 & 0
+\end{pmatrix}
+X^{\text T}(y - X\beta)$$
+
+Les deux dérivées partielles soient continues sur $\mathbb{R}^2$, on sait que cette fonction est différentiable sur $\mathbb{R}^2$.
+
+Si $\hat\beta$ satisfait (4.2), il suffit que
+
+$$ \nabla_{\beta} ||y - X\beta||^2 (\hat\beta) = 0 $$
+
+$$ \nabla_{\beta} \left(y - X\beta\right)^{\text T} (y - X\beta) (\hat\beta) = 0 $$
+
+Ainsi
+
+$$ \nabla_{\beta} \left(y^{\text T}y - 2y^{\text T} X\beta + X^{\text T}X\beta^{\text T}\beta\right) (\hat\beta) = 0 $$
+
+$$ - 2y^{\text T}X  + 2X{^\text T}X\hat\beta = 0 $$
+
+$$ X{^\text T}X\hat\beta = X^{\text T}y $$
+
+Ce qui implique que ${\rm Im} (X ^ {\text T}X) = {\rm Im} (X ^ {\text T})$, et l'ensemble des solutions $\arg \min_{\beta\in\mathbb{R}^2}||y - X\beta||^2$ est celui du système linéaire:
+
+$$ X{^\text T}X\hat\beta = X^{\text T}y $$
+
+où $\hat\beta \in \mathbb{R}^2$ est l'inconnu.
+
+\subsection*{T3}
+
+On a pout tout $1 \le i \le n$,
+
+$$ y_i = \beta_0 + \beta_1x_i+\varepsilon_i = (X\beta)_i +\varepsilon_i$$
+
+Donc, on a bien
+$$y = X\beta + \varepsilon$$
+
+Si $X$ et $\beta$ sont fixés, d'après \textbf{T1}, 
+$$ y \sim \mathcal{N}(X\beta, \sigma^2\pmb{I}) $$
+
+Comme on a $\hat\beta = (X{^\text T}X)^{-1}X^{\text T}y$ et $y = X\beta + \varepsilon$,
+
+$$ \mathbb E[\hat\beta] = \mathbb E[(X{^\text T}X)^{-1}X^{\text T}\left(X\beta + \epsilon\right)] = \mathbb E[(X{^\text T}X)^{-1}X^{\text T}X\beta] + \mathbb E[(X{^\text T}X)^{-1}X^{\text T}\epsilon] $$
+
+Si $X$ et $\beta$ sont fixés, $\mathbb E[X\beta] = X\beta$, par construction $E[\epsilon] = 0$,
+
+$$ \mathbb E[\hat\beta] = \underbrace{(X{^\text T}X)^{-1}X^{\text T}X}_{Id}\beta = \beta$$
+
+On peut dire que l'estimateur $\hat\beta$ est non-biaisé.
+\subsection*{T4}
+
+
+Remarquons que
+
+\[
+\begin{aligned}
+	\hat{\beta} - \beta &= (X^T X)^{-1}X^T y - \beta \\
+	&= (X^T X)^{-1}X^T (X\beta + \epsilon) - \beta \\
+	&= (X^T X)^{-1}X^T X\beta + (X^T X)^{-1}X^T \epsilon - \beta \\
+	&= \underbrace{(X^T X)^{-1}X^T X}_{I}\beta + (X^T X)^{-1}X^T \epsilon - \beta \\
+	&= (X^T X)^{-1}X^T \epsilon
+\end{aligned}
+\]
+
+
+$$ X(\hat \beta - \beta) = X(X^{\text T}X)^{-1}X^{\text T}\varepsilon $$
+
+On note la matrice $H = X(X^{\text T}X)^{-1}X^{\text T}$, on vérifie
+
+$$H^2 = X(X^{\text T}X)^{-1}X^{\text T}X(X^{\text T}X)^{-1}X^{\text T} = X(X^{\text T}X)^{-1}X^{\text T} = H$$
+
+$$H^{\text T} = (X(X^{\text T}X)^{-1}X^{\text T})^{\text T} = (X^{\text T}) ^ {\text T} ((X^{\text T}X)^{-1}) ^{\text T} X^{\text T} = X(X^{\text T}X)^{-1}X^{\text T} = H $$
+
+Donc H est une projection orthogonale dans $\mathbb{R}^2$ sur le sous-espace ${\rm Vect} (X)$, engendré par les vecteurs colonnes de $X$.
+
+Notons $B = H \varepsilon$, comme $\varepsilon$ est un vecteur gaussien dont les éléments sont i.i.d., centrées et de variance $\sigma > 0$, on obtient
+
+$$ \varepsilon \sim \mathcal{N}(\pmb{0}, \sigma^2\pmb{I})  $$
+
+$$ B = H\varepsilon \sim \mathcal{N}(\pmb{0}, \sigma^2H\pmb{I}H^{\text T}) $$
+
+Comme $H\pmb{I}H^{\text T} = H H = H$,
+
+$$ B \sim \mathcal{N}(\pmb{0}, \sigma^2H) $$
+
+$$ \frac{B}{\sigma} \sim \mathcal{N}(\pmb{0}, H) $$
+
+Donc, on a
+
+$$ \sigma^{-2}(\hat \beta - \beta)^{\text T}X^{\text T}X(\hat \beta - \beta) = \sigma^{-2} B^{\text T}B = || \frac{B}{\sigma} ||^2 $$
+
+On montre que
+$$\sigma^{-2}(\hat \beta - \beta)^{\text T}X^{\text T}X(\hat \beta - \beta) \sim \chi^2(2)$$
+
+Puis,
+
+\begin{align*}
+	\mathbb{P}(\beta \in \mathcal{E}_{\alpha}) &= \mathbb{P}(\sigma^{-2}(\beta - \hat \beta)^{\text T}X^{\text T}X(\beta - \hat \beta) \le q_{\chi^2(2)}(1-\alpha)) \\
+	&= \mathbb{P}(\sigma^{-2}(\hat \beta - \beta)^{\text T}X^{\text T}X(\hat \beta - \beta) \le q_{\chi^2(2)}(1-\alpha))
+\end{align*}
+
+
+Selon la définition du quantile, en notant $F_{\chi^2(2)}$ la fonction de répartition d'une variable aléatoire suivant une loi du $\rm{Chi}^2$ à $n$ degré de liberté, on a
+$$q_{\chi^2(2)}(1-\alpha) = \inf{\{x \in \mathbb{R}, F_{\chi^2(2)}(x) \ge 1-\alpha\}}$$
+
+Il est immédiat que
+$$\mathbb{P}(\beta \in \mathcal{E}_{\alpha}) = 1 - \alpha$$
+
+\subsection*{T5}
+
+D'après le calcul on a
+$$(X^n)^{\text T}X^n = 
+\begin{pmatrix}
+	n & \sum_{i=1}^{n} x_i \\
+	\sum_{i=1}^{n} x_i & \sum_{i=1}^{n} x_{i}^2
+\end{pmatrix}
+$$
+et
+$$(X^n)^{\text T}\varepsilon^n =
+\begin{pmatrix}
+	\sum_{i=1}^{n} \varepsilon_i \\
+	\sum_{i=1}^{n} x_i \varepsilon_{i}
+\end{pmatrix}
+$$
+
+On sait que ${\left(x_i\right)}_{i>=1}$ est une suite de variables i.i.d. et suivent la loi uniforme sur $\left(0, 1\right)$, donc intégrables. On a
+$$\mathbb E[x_1] = \frac{1}{2}$$
+
+D'après la loi des grands nombres,
+$$\lim_{n \rightarrow \infty}{\frac{1}{n} \sum_{i=1}^{n} x_i} = \frac{1}{2} \; p.s.$$
+
+De même, on peut calculer les espérances:
+$$\mathbb E[x_1^2] = \int_{\mathbb{R}} {x^2} \mathbb{I}_{[0,1]} \,{\rm d}x = \int_0^1 {x^2} \,{\rm d}x = \frac{1}{3}$$
+$$\mathbb E[\varepsilon_1] = 0$$
+$$\mathbb E[x_1 \varepsilon_1] = \mathbb E[x_1] \mathbb E[\varepsilon_1] = 0$$
+
+Puisque ${\left(x_{i}^2\right)}_{i>=1}$, ${\left(\varepsilon_i\right)}_{i>=1}$ et ${\left(x_i \varepsilon_{i}\right)}_{i>=1}$ sont aussi i.i.d. et intégrables, appliquons la loi des grands nombres sur chacune de ces suites.
+$$\lim_{n \rightarrow \infty}{\frac{1}{n} \sum_{i=1}^{n} x_{i}^2} = \frac{1}{3} \; p.s.$$
+$$\lim_{n \rightarrow \infty}{\frac{1}{n} \sum_{i=1}^{n} \varepsilon_i} = 0 \; p.s.$$
+$$\lim_{n \rightarrow \infty}{\frac{1}{n} \sum_{i=1}^{n} x_i \varepsilon_{i}} = 0 \; p.s.$$
+
+Donc,
+$$ \lim_{n \rightarrow \infty} {\frac{1}{n}(X^n)^{\text T}X^n} =
+\begin{pmatrix}
+	1 & \lim_{n \rightarrow \infty}{\frac{1}{n} \sum_{i=1}^{n} x_i} \\
+	\lim_{n \rightarrow \infty}{\frac{1}{n} \sum_{i=1}^{n} x_i} & \lim_{n \rightarrow \infty}{\frac{1}{n} \sum_{i=1}^{n} x_{i}^2}
+\end{pmatrix}
+=
+\begin{pmatrix}
+	1 & 1 / 2 \\
+	1 / 2 & 1 / 3
+\end{pmatrix} \; p.s. $$
+
+$$ \lim_{n \rightarrow \infty} {\frac{1}{n}(X^n)^{\text T}\varepsilon^n} =
+\begin{pmatrix}
+	\lim_{n \rightarrow \infty}{\frac{1}{n} \sum_{i=1}^{n} \varepsilon_i} \\
+	\lim_{n \rightarrow \infty}{\frac{1}{n} \sum_{i=1}^{n} x_i \varepsilon_{i}}
+\end{pmatrix}
+= \pmb{0} \; p.s. $$
+
+Puis, comme la matrice $(X^n)^{\text T}X^n$ est inversible, et on a la relation
+
+$$ \frac{1}{n} (X^n)^{\text T}X^n n ((X^n)^{\text T}X^n)^{-1} = n ((X^n)^{\text T}X^n)^{-1} \frac{1}{n} (X^n)^{\text T}X^n = \pmb{I} $$
+
+En passant à l'inverse, on obtient
+$$ \lim_{n \rightarrow \infty} {(\frac{1}{n}(X^n)^{\text T}X^n)^{-1}} = \lim_{n \rightarrow \infty} {n ((X^n)^{\text T}X^n)^{-1}} =
+\begin{pmatrix}
+	1 & 1 / 2 \\
+	1 / 2 & 1 / 3
+\end{pmatrix}^{-1} \; p.s. $$
+
+En les multipliant, on obtient
+$$ \lim_{n \rightarrow \infty} {n ((X^n)^{\text T}X^n)^{-1} \frac{1}{n}(X^n)^{\text T}\varepsilon^n} = \lim_{n \rightarrow \infty} {((X^n)^{\text T}X^n)^{-1}(X^n)^{\text T}\varepsilon^n} =
+\begin{pmatrix}
+	1 & 1 / 2 \\
+	1 / 2 & 1 / 3
+\end{pmatrix}^{-1} \pmb{0} = \pmb{0}
+\; p.s. $$
+
+Selon **T4**, on a
+$$ \hat \beta^n - \beta = ((X^n){^\text T}X^n)^{-1}(X^n)^{\text T}\varepsilon^n $$
+
+Donc
+
+$$ \lim_{n \rightarrow \infty} {\hat \beta^n - \beta} = \lim_{n \rightarrow \infty} {((X^n){^\text T}X^n)^{-1}(X^n)^{\text T}\varepsilon^n} = \pmb{0} \; p.s. $$
+
+$$ \lim_{n \rightarrow \infty} {\hat \beta^n} = \beta \; p.s. $$
+
+\subsection*{T6}
+
+Pout tout $1 <= i <= n$, on a
+$$y_i = \frac{1}{1 + \exp(-\theta_0 - \theta_1x_i)} + \varepsilon_i$$
+$$\varepsilon_i = y_i - \frac{1}{1 + \exp(-\theta_0 - \theta_1x_i)} = y_i - f(\theta, x_i) \sim \mathcal{N}(0, \sigma^2)$$
+
+Quand les données $\left(x_i, y_i\right)_{1 \le i \le n}$ sont fixées, $y_i - f(\theta, x_i)$ est une fonction de $\theta$, on peut définir la vraisemblance comme
+$$p_i(\theta) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp{\left(-\frac{|y_i - f(\theta, x_i)|^2}{2\sigma^2}\right)}$$
+
+qui correspond à la probabilité pour une variable aléatoire gaussienne centrée de variance $\sigma^2 > 0$ d'être égale à $y_i - f(\theta, x_i)$.
+
+Donc la vraisemblance totale vaut
+
+$$p(\theta) = \prod_{i = 1}^{n} p_i(\theta) = \frac{1}{(2\pi\sigma^2)^{n / 2}} \exp{\left(-\frac{\sum_{i = 1}^{n} |y_i - f(\theta, x_i)|^2}{2\sigma^2}\right)}$$
+
+C'est une fonction décroissante de $\sum_{i = 1}^{n} |y_i - f(\theta, x_i)|^2$, donc on a
+$$\arg \max_{\theta\in\mathbb{R}^2}p(\theta) = \arg \min_{\theta\in\mathbb{R}^2} \sum_{i = 1}^{n} |y_i - f(\theta, x_i)|^2 = \arg \min_{\theta\in\mathbb{R}^2} \frac{1}{n}\sum_{i = 1}^{n} |y_i - f(\theta, x_i)|^2$$
+
+Finalement on obtient
+$$\hat \theta \in \arg \min_{\theta\in\mathbb{R}^2} L(\theta)$$
+
+\subsection*{T7}
+
+- Tirage avec remplacement
+
+On note $m_i$ le i-ième indice dans $I_m$ avec $1 \le i \le m$.
+
+Comme $I_m$ est constitué de $m$ indices tirés de manière indépendente et uniforme dans $\{1, ..., n\}$, alors pour tout $1 \le i \le m$, $m_i$ suit une loi uniforme sur $\{1, ..., n\}$.
+
+On obtient
+$$\forall i \in \mathbb{N}^*, i <= m, \mathbb E(G_{m_i}) = \frac{1}{n} \sum^{n}_{i = 1} G_i = g(\theta) $$
+
+Donc, on a
+$$ \mathbb E(g_{m}(\theta)) = \mathbb E(\frac{1}{m} \sum_{j \in I_m} G_j) = \mathbb E(\frac{1}{m} \sum_{i = 1}^{m} G_{m_i}) = \frac{1}{m} \sum_{i = 1}^{m} \mathbb E(G_{m_i}) = g(\theta) $$
+
+
+- Tirage sans remplacement
+
+Supposons $m$ donné, pour une tirage avec remplacement, chaque partie de $m$ éléments de l'ensemble $\{1, ..., n\}$ a une chance de $1 / \tbinom{n}{m} $ d'être tirée.
+
+Notons $\mathbb{T}_m$ l'ensemble de tirages possibles, par un dénombrement, on peut déduire que
+$${\rm Card} \left( \mathbb{T}_m \right) = \tbinom{n}{m}$$
+et
+$$\forall k \in \mathbb{N}^*, k \le n, \sum_{T \in \mathbb{T}_m} \mathbb{I}_{k \in T} = \tbinom{n - 1}{m - 1} $$
+
+Donc, on a
+$$ \mathbb E(g_{m}(\theta)) = \frac{1}{\tbinom{n}{m}} \sum_{T \in \mathbb{T}_m} \left( \frac{1}{m} \sum_{t \in T} G_t \right) $$
+
+En changeant l'ordre des deux sommes, on obtient
+$$ \mathbb E(g_{m}(\theta)) = \frac{1}{\tbinom{n}{m}m} \sum_{t = 1}^{n} \sum_{T \in \mathbb{T}_m} \mathbb{I}_{t \in T}G_{t} = \frac{1}{\tbinom{n}{m}m} \sum_{t = 1}^{n} \tbinom{n - 1}{m - 1} G_{t} = \frac{1}{n} \sum_{t = 1}^{n} G_{t} = g(\theta) $$
+
+\subsection*{T8}
+
+On note $g(\theta)_0, g(\theta)_1$ les deux éléments du vecteur colonne $g(\theta)$, puisque l'on a montré dans **T7** que
+
+$$\forall i \in \mathbb{N^{*}}, i \le n, \mathbb E (G_i) = g(\theta)$$
+
+donc on a
+
+$$ \mathbb E(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0}) = g(\theta)_0 $$
+$$ \mathbb E(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_1}) = g(\theta)_1 $$
+
+On écrit $g_{m}(\theta)$ et $\Sigma(\theta)$ sous forme d'une matrice
+
+$$ g_{m}(\theta) = \frac{1}{m} \sum_{j \in I_m} G_j = \frac{1}{m} \sum_{j \in I_m} 2(f(\theta, x_j) - y_j) \nabla_{\theta} f(\theta, x_j) =
+\begin{pmatrix}
+	\frac{1}{m} \sum_{j \in I_m} 2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_0} \\
+	\frac{1}{m} \sum_{j \in I_m} 2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_1}
+\end{pmatrix}
+$$
+
+
+
+\[
+\begin{aligned}
+	\Sigma(\theta) = \frac{1}{n}\sum_{i = 1}^{n} \overline{G}_i\overline{G}_i^{\text T} = \frac{1}{n}\sum_{i = 1}^{n}
+	\begin{pmatrix}
+		2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0} - g(\theta)_0 \\
+		2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_1} - g(\theta)_1
+	\end{pmatrix}\cdot\\\cdot
+	\begin{pmatrix}
+		2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0} - g(\theta)_0 &
+		2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_1} - g(\theta)_1
+	\end{pmatrix}
+\end{aligned}
+\]
+
+
+%$$\Sigma(\theta) =
+%\begin{pmatrix}
+%	\frac{1}{n} \sum_{i = 1}^{n} (2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0} - g(\theta)_0)^2 & \frac{1}{n} \sum_{i = 1}^{n} (2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0} - g(\theta)_0)(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_1} - g(\theta)_1) \\
+%	\frac{1}{n} \sum_{i = 1}^{n} (2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0} - g(\theta)_0)(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_1} - g(\theta)_1) & \frac{1}{n} \sum_{i = 1}^{n} (2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_1} - g(\theta)_1)^2
+%\end{pmatrix}
+%$$
+
+On utilise les notations du problème précédent.
+
+- Tirage avec remplacement
+
+On calcule
+
+\begin{align*}
+	\text{Var}\left(\frac{1}{m} \sum_{j \in I_m} 2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_0}\right) &= \text{Var}\left(\frac{1}{m} \sum_{i = 1}^{m} 2(f(\theta, x_{m_i}) - y_{m_i}) \frac{\partial f(\theta, x_{m_i})}{\partial \theta_0}\right) \\
+	&= \frac{1}{m^2} \sum_{i = 1}^{m} \mathbb{E}\left((2(f(\theta, x_{m_i}) - y_{m_i}) \frac{\partial f(\theta, x_{m_i})}{\partial \theta_0} - g(\theta)_0)^2\right)
+\end{align*}
+
+
+Pour tout $1 \le i \le m$, $m_i$ suit une loi uniforme sur $\{1, ..., n\}$, donc
+
+$$ \mathbb E ((2(f(\theta, x_{m_i}) - y_{m_i}) \frac{\partial f(\theta, x_{m_i})}{\partial \theta_0} - g(\theta)_0)^2) = \sum^{n}_{i = 1} \frac{1}{n} (2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0} - g(\theta)_0)^2 $$
+
+Donc, on a
+
+\begin{align*}
+	\left(\text{Cov}\left(g_{m}(\theta)\right)\right)_{1, 1} &= \text{Var}\left(\frac{1}{m} \sum_{j \in I_m} 2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_0}\right) \\
+	&= \frac{1}{mn} \sum^{n}_{i = 1} (2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0} - g(\theta)_0)^2 \\
+	&= \frac{1}{m} \left(\Sigma(\theta)\right)_{1, 1}
+\end{align*}
+
+
+Par un raisonnement analogue, on a
+
+$$ \left({\rm Cov} \left( g_{m}(\theta) \right)\right)_{1, 2} = \frac{1}{mn} \sum^{n}_{i = 1} (2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0} - g(\theta)_0) (2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_1} - g(\theta)_1) = \frac{1}{m} \left( \Sigma(\theta) \right)_{1, 2} $$
+
+$$ \left({\rm Cov} \left( g_{m}(\theta) \right)\right)_{2, 1} = \frac{1}{mn} \sum^{n}_{i = 1} (2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0} - g(\theta)_0) (2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_1} - g(\theta)_1) = \frac{1}{m} \left( \Sigma(\theta) \right)_{2, 1} $$
+
+\begin{align*}
+	\left(\text{Cov}\left(g_{m}(\theta)\right)\right)_{2, 2} &= \text{Var}\left(\frac{1}{m} \sum_{j \in I_m} 2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_1}\right) \\
+	&= \frac{1}{mn} \sum^{n}_{i = 1} (2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_1} - g(\theta)_1)^2 \\
+	&= \frac{1}{m} \left(\Sigma(\theta)\right)_{2, 2}
+\end{align*}
+
+
+Finalement, on montre que
+$$ {\rm Cov} \left( g_{m}(\theta) \right) = \frac{1}{m} \Sigma(\theta) $$
+
+
+- Tirage sans remplacement
+
+On calcule
+
+\begin{align*}
+	\left(\Sigma(\theta)\right)_{1, 1} &= \frac{1}{n} \sum_{i = 1}^{n} (2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0} - g(\theta)_0)^2 \\
+	&= \frac{1}{n}\sum^{n}_{i = 1} \left(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0}\right)^2 - \frac{2}{n} g(\theta)_0 \sum^{n}_{i = 1} \left(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0}\right) + g^2(\theta)_0
+\end{align*}
+
+
+\begin{align*}
+	&= \frac{1}{n} \sum^{n}_{i = 1} \left(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0}\right)^2 - g^2(\theta)_0 \\
+	&= \left(\frac{1}{n} - \frac{1}{n^2}\right) \sum^{n}_{i = 1} \left(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0}\right)^2 - \frac{2}{n^2} \sum_{1 \le i \lt j \le n} \left(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0}\right) \\
+	&\left(2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_0}\right)
+\end{align*}
+
+
+Et
+
+$$ \left({\rm Cov} \left( g_{m}(\theta) \right)\right)_{1, 1} = {\rm Var} (\frac{1}{m} \sum_{j \in I_m} 2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_0}) = \mathbb E((\frac{1}{m} \sum_{j \in I_m} 2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_0} - g^2(\theta)_0)) $$
+
+$$ = \mathbb E\left( g^2(\theta)_0 - \frac{2}{m}g(\theta)_0 \sum_{j \in I_m} 2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_0} + \frac{1}{m^2} \left( \sum_{j \in I_m} 2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_0} \right)^2 \right) $$
+
+$$ = g^2(\theta)_0 - \frac{2}{m}g(\theta)_0 \mathbb E\left( \sum_{j \in I_m} 2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_0} \right) + \frac{1}{m^2} \mathbb E\left( \left( \sum_{j \in I_m} 2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_0} \right)^2 \right) $$
+
+On a
+
+$$ \mathbb E\left( \sum_{j \in I_m} 2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_0} \right) = \sum_{T \in \mathbb{T}_m} \frac{1}{\tbinom{n}{m}} \sum_{t \in T} 2 (f(\theta, x_t) - y_t) \frac{\partial f(\theta, x_t)}{\partial \theta_0} = n \frac{\tbinom{n-1}{m-1}}{\tbinom{n}{m}} g(\theta)_0 = m g(\theta)_0 $$
+
+$$ \mathbb E\left( \left( \sum_{j \in I_m} 2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_0} \right)^2 \right) = \sum_{T \in \mathbb{T}_m} \frac{1}{\tbinom{n}{m}} \left( \sum_{t \in T} 2(f(\theta, x_t) - y_t) \frac{\partial f(\theta, x_t)}{\partial \theta_0} \right)^2 $$
+
+\begin{align*}
+	&= \frac{\binom{n-1}{m-1}}{\binom{n}{m}} \sum^{n}_{i = 1} \left(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0}\right)^2 \\
+	&\quad + \frac{2\binom{n-2}{m-2}}{\binom{n}{m}} \sum_{1 \leq i < j \leq n} \left(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0}\right) \left(2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_0}\right)
+\end{align*}
+
+
+\begin{align*}
+	&= \frac{m}{n} \sum^{n}_{i = 1} \left(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0}\right)^2 \\
+	&\quad + \frac{2m(m-1)}{n(n-1)} \sum_{1 \leq i < j \leq n} \left(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0}\right) \left(2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_0}\right)
+\end{align*}
+
+
+Donc
+
+\begin{align*}
+	\left({\rm Cov} \left( g_{m}(\theta) \right)\right)_{1, 1} &= -g^2(\theta)_0 + \frac{1}{mn} \sum^{n}_{i = 1} \left(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0}\right)^2 \\
+	&\quad + \frac{2(m-1)}{mn(n-1)} \sum_{1 \leq i < j \leq n} \left(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0}\right) \left(2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_0}\right)
+\end{align*}
+
+
+\begin{align*}
+	&= \left(\frac{1}{mn} - \frac{1}{n^2}\right) \sum^{n}_{i = 1} \left(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0}\right)^2 \\
+	&\quad + \left( \frac{2(m-1)}{mn(n-1)}  - \frac{2}{n^2} \right) \sum_{1 \leq i < j \leq n} \left(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0}\right) \left(2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_0}\right)
+\end{align*}
+
+
+\begin{align*}
+	&= \frac{n - m}{n^2m} \sum^{n}_{i = 1} \left(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0}\right)^2 \\
+	&\quad + \frac{2 (m - n)}{n^2(n - 1)m} \sum_{1 \leq i < j \leq n} \left(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0}\right) \left(2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_0}\right)
+\end{align*}
+
+
+Par l'équivalence des coefficients, on a
+
+\begin{align*}
+	&\frac{1}{m} \frac{n - m}{n - 1} \left( \Sigma(\theta) \right)_{1, 1} \\
+	&= \frac{n - m}{n^2m} \sum^{n}_{i = 1} \left(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0}\right)^2 \\
+	&\quad - \frac{2 (n - m)}{n^2(n - 1)m} \sum_{1 \leq i < j \leq n} \left(2(f(\theta, x_i) - y_i) \frac{\partial f(\theta, x_i)}{\partial \theta_0}\right) \left(2(f(\theta, x_j) - y_j) \frac{\partial f(\theta, x_j)}{\partial \theta_0}\right) \\
+	&= \left({\rm Cov} \left( g_{m}(\theta) \right)\right)_{1, 1}
+\end{align*}
+
+
+Par un raisonnement similaire, on montre que
+$$\frac{1}{m} \frac{n - m}{n - 1} \left( \Sigma(\theta) \right)_{1, 2} = \left({\rm Cov} \left( g_{m}(\theta) \right)\right)_{1, 2} $$
+
+$$\frac{1}{m} \frac{n - m}{n - 1} \left( \Sigma(\theta) \right)_{2, 1} = \left({\rm Cov} \left( g_{m}(\theta) \right)\right)_{2, 1} $$
+
+$$\frac{1}{m} \frac{n - m}{n - 1} \left( \Sigma(\theta) \right)_{2, 2} = \left({\rm Cov} \left( g_{m}(\theta) \right)\right)_{2, 2} $$
+
+Finalement, on obtient
+
+$$ {\rm Cov} \left( g_{m}(\theta) \right) = \frac{1}{m} \frac{n - m}{n - 1} \Sigma(\theta)$$
+
+Puisque $\frac{n-m}{n-1} \le 1$, la matrice de covariance dans le cas sans remplacement est plus petit en termes, donc il est plus préférable.
+
+	
+\end{document}
